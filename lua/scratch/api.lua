@@ -207,12 +207,32 @@ local function open_scratch_telescope()
   })
 end
 
-local function open_sratch_snacks()
+local function open_scratch_snacks()
   local config_data = vim.g.scratch_config
 
   Snacks.picker.files({
     cwd = config_data.scratch_file_dir,
     title = "Select old scratch files",
+    win = {
+      input = {
+        keys = {
+          ["<c-x>"] = "delete",
+        },
+      },
+    },
+    actions = {
+      delete = function(picker, item)
+        local file_path = config_data.scratch_file_dir .. slash .. item.file
+        if vim.fn.filereadable(file_path) == 1 then
+          vim.fn.delete(file_path)
+          picker.list:set_selected()
+          picker.list:set_target()
+          picker:find()
+        else
+          Snacks.notify.error("File not found: " .. file_path, { title = "Snacks Picker" })
+        end
+      end,
+    },
   })
 end
 
@@ -249,7 +269,7 @@ local function openScratch()
   elseif config_data.file_picker == "fzflua" then
     open_scratch_fzflua()
   elseif config_data.file_picker == "snacks" then
-    open_sratch_snacks()
+    open_scratch_snacks()
   else
     open_scratch_vim_ui()
   end
