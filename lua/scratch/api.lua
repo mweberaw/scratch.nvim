@@ -207,6 +207,15 @@ local function open_scratch_telescope()
   })
 end
 
+local function open_sratch_snacks()
+  local config_data = vim.g.scratch_config
+
+  Snacks.picker.files({
+    cwd = config_data.scratch_file_dir,
+    title = "Select old scratch files",
+  })
+end
+
 local function open_scratch_vim_ui()
   local files = get_scratch_files()
   local config_data = vim.g.scratch_config
@@ -239,6 +248,8 @@ local function openScratch()
     open_scratch_telescope()
   elseif config_data.file_picker == "fzflua" then
     open_scratch_fzflua()
+  elseif config_data.file_picker == "snacks" then
+    open_sratch_snacks()
   else
     open_scratch_vim_ui()
   end
